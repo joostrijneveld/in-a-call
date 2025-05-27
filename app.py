@@ -8,7 +8,10 @@ from flask import Flask, abort, render_template, request
 
 load_dotenv()
 
-if "API_SECRET" not in os.environ:
+API_SECRET = os.environ.get("IN_A_CALL_API_SECRET")
+TIMEZONE = os.environ.get("IN_A_CALL_TIMEZONE", "UTC")
+
+if API_SECRET is None:
     raise Exception("API_SECRET environment variable is required")
 
 app = Flask(__name__)
@@ -29,9 +32,9 @@ def map_status(status):
 def format_datetime(timestamp):
     if timestamp is None:
         return "Unknown"
-    return timestamp.astimezone(
-        dateutil.tz.gettz(os.environ.get("TIMEZONE", "Europe/Amsterdam"))
-    ).strftime("%Y-%m-%d %H:%M:%S (%Z)")
+    return timestamp.astimezone(dateutil.tz.gettz(TIMEZONE)).strftime(
+        "%Y-%m-%d %H:%M:%S (%Z)"
+    )
 
 
 @app.route("/")
@@ -42,7 +45,7 @@ def index():
 @app.route("/update", methods=["POST"])
 def update():
     data = request.json
-    if "API_SECRET" not in data or data["API_SECRET"] != os.environ["API_SECRET"]:
+    if "API_SECRET" not in data or data["API_SECRET"] != API_SECRET:
         abort(401)  # unauthorized
     if data["status"] not in ("call", "free"):
         abort(400)  # bad request
