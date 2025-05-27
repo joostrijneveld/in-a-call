@@ -23,18 +23,14 @@
             <div class="col p-0">
                 <div class="row text-center p-0">
                     <h1>{{ status | map_status }}</h1>
-                </div>
-                <div class="row">
-                    <div class="col-6 text-end">Status since:
-                    </div>
-                    <div class="col-6 text-start">{{ status_since | format_datetime }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 text-end">Last updated:
-                    </div>
-                    <div class="col-6 text-start">{{ last_updated | format_datetime }}
-                    </div>
+                    <p>
+                        Status since:<br>
+                        {{ status_since | format_datetime }}
+                    </p>
+                    <p>
+                        Last updated:<br>
+                        {{ last_updated | format_datetime }}
+                    </p>
                 </div>
             </div>
         </div>
