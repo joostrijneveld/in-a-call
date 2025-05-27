@@ -1,7 +1,10 @@
 import datetime
+import os
+
+import dateutil
 from dotenv import load_dotenv
 from flask import Flask, abort, render_template, request
-import os
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -22,7 +25,9 @@ def map_status(status):
 def format_datetime(timestamp):
     if timestamp is None:
         return "Unknown"
-    return timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    return timestamp.astimezone(
+        dateutil.tz.gettz(os.environ.get("TIMEZONE", "Europe/Amsterdam"))
+    ).strftime("%Y-%m-%d %H:%M:%S (%Z)")
 
 
 @app.route("/")
@@ -39,5 +44,5 @@ def update():
         abort(400)  # bad request
     state["status"] = data["status"]
     state["status_since"] = datetime.datetime.fromisoformat(data["status_since"])
-    state["last_updated"] = datetime.datetime.now()
+    state["last_updated"] = datetime.datetime.now(dateutil.tz.UTC)
     return state
