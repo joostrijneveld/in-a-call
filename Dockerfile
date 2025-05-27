@@ -1,4 +1,4 @@
-FROM python:3.12.3-alpine3.20
+FROM python:slim
 RUN pip install Flask
 RUN pip install gunicorn
 RUN pip install python-dotenv
