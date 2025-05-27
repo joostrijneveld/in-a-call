@@ -7,6 +7,10 @@ from flask import Flask, abort, render_template, request
 
 
 load_dotenv()
+
+if "API_SECRET" not in os.environ:
+    raise Exception("API_SECRET environment variable is required")
+
 app = Flask(__name__)
 
 state = {"status": None, "status_since": None, "last_updated": datetime.datetime.now()}
